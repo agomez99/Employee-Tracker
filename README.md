@@ -4,6 +4,9 @@ A solution for managing a company's employees using node, inquirer, and MySQL.
 
 <br>
 ![intro](images/intro.jpg)
+
+<br>
+
 tables
 ![tables](images/tables.jpg)
 
