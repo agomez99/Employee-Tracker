@@ -1,7 +1,7 @@
 const inquirer = require("inquirer");
 let Database = require("./db");
 const logo = require('asciiart-logo');
-const longText = 'A solution for managing a companys employees using node, inquirer, and MySQL.';
+const longText = 'An Employee Management System solution for managing a companys employees using node, inquirer, and MySQL.';
 //Asciiart logo
 console.log(
     logo({
@@ -88,11 +88,14 @@ async function getEmployeeNames() {
     }
     return employeeNames;
 }
+
+//Tables
 //View Roles
 async function viewAllRoles() {
     console.log("");
     let query = "SELECT * FROM role";
     const rows = await db.query(query);
+    console.log("\u001b[35mRoles\u001b[0m");
     console.table(rows);
     return rows;
 }
@@ -100,6 +103,7 @@ async function viewAllRoles() {
 async function viewAllDepartments() {
     let query = "SELECT * FROM department";
     const rows = await db.query(query);
+    console.log("\u001b[35mDepartments\u001b[0m");
     console.table(rows);
 }
 //View Employees
@@ -107,6 +111,7 @@ async function viewAllEmployees() {
     console.log("");
     let query = "SELECT * FROM employee";
     const rows = await db.query(query);
+    console.log("\u001b[35mEmployees\u001b[0m");
     console.table(rows);
 }
 //View Employees by Department
@@ -114,16 +119,52 @@ async function viewAllEmployeesByDepartment() {
     console.log("");
     let query = "SELECT first_name, last_name, department.name FROM ((employee INNER JOIN role ON role_id = role.id) INNER JOIN department ON department_id = department.id);";
     const rows = await db.query(query);
+    console.log("\u001b[35mEmployees by department\u001b[0m");
     console.table(rows);
 }
+//View Employess by Manager
+async function viewAllEmployeesByManager() {
+    console.log("");
+    let query = "SELECT * FROM employee";
+    const rows = await db.query(query);
+    console.log("\u001b[35mEmployees by manager\u001b[0m");
+    console.table(rows,["first_name","last_name","manager_id"]);
+}
 
-// [first_name, last_name]
+//View all tables at once
+async function viewAllTables() {
+    console.log("");
+
+    let query1 = "SELECT * FROM employee";
+    const rows = await db.query(query1);
+    console.log("Employees")
+    console.table(rows,["first_name","last_name"])
+
+    let query2 = "SELECT * FROM role";
+    const rows2 = await db.query(query2);
+    console.log("Roles")
+    console.table(rows2,["title","salary"]);
+
+    let query3 = "SELECT * FROM department";
+    const rows3 = await db.query(query3);
+    console.log("Departments")
+    console.table(rows3);
+
+    let query4 = "SELECT * FROM employee";
+    const rows4 = await db.query(query4);
+    console.log("Employee by Manger")
+    console.table(rows4,["first_name","last_name","manager_id"]);
+  
+}
+
+
+
+// Get first and last name
 function getFirstAndLastName( fullName ) {
     let employee = fullName.split(" ");
     if(employee.length == 2) {
         return employee;
     }
-
     const last_name = employee[employee.length-1];
     let first_name = " ";
     for(let i=0; i<employee.length-1; i++) {
@@ -131,7 +172,7 @@ function getFirstAndLastName( fullName ) {
     }
     return [first_name.trim(), last_name];
 }
-//Update employee rol
+//Update employee role
 async function updateEmployeeRole(employeeInfo) {
     const roleId = await getRoleId(employeeInfo.role);
     const employee = getFirstAndLastName(employeeInfo.employeeName);
@@ -183,7 +224,7 @@ async function run() {
         .prompt([
             {
                 type: "list",
-                message: "\u001b[32mWelcome the employee database, what would you like to do?\u001b[0m",
+                message: "\u001b[32mWelcome the employee database, what would you like to do?\u001b[0m\n",
                 name: "action",
                 choices: [
                   "Add department",
@@ -194,7 +235,9 @@ async function run() {
                   "View all departments",
                   "View all employees",
                   "View all employees by department",
+                  "View all employees by manager",
                   "View all roles",
+                  "View all tables",
                   "Exit"
                 ]
             }
@@ -345,8 +388,16 @@ async function start() {
                 await viewAllEmployeesByDepartment();
                 break;
             }
+            case 'View all employees by manager': {
+                await viewAllEmployeesByManager();
+                break;
+            }
             case 'View all roles': {
                 await viewAllRoles();
+                break;
+            }
+            case 'View all tables': {
+                await viewAllTables();
                 break;
             }
             case 'Exit': {
@@ -366,5 +417,4 @@ process.on("exit", async function(code) {
     await db.close();
     return console.log(`About to exit with code ${code}`);
 });
-
 start();
