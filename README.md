@@ -2,9 +2,10 @@
 
 A solution for managing a company's employees using node, inquirer, and MySQL.
 
-tables
 <br>
-![gif](images/table.gif)
+![intro](images/intro.jpg)
+tables
+![tables](images/tables.jpg)
 
 remove and add employee
 <br>
