@@ -8,13 +8,9 @@ Intro screen
 <br>
 tables
 <br>
-![tables](images/tables.jpg)
 <br>
 remove and add employee
 <br>
 ![gif](images/employee.gif)
 
 
-add role and update employee role
-<br>
-![gif](images/role.gif)
